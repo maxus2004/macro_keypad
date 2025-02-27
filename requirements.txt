@@ -1,4 +1,4 @@
-ble-serial==3.0.0
-keyboard==0.13.5
-pyperclip==1.9.0
-pyserial_asyncio==0.6
+ble-serial >= 3.0.0
+keyboard >= 0.13.5
+pyperclip >= 1.9.0
+pyserial_asyncio >= 0.6
