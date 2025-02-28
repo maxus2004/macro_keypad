@@ -148,7 +148,10 @@ async def ble_loop():
 def update_status():
     global ipc_connection, ipc_connected
     if not ipc_connected: return
-    ipc_connection.sendall(json.dumps({"usb_connected":usb_connected,"ble_connected":ble_connected}).encode())
+    try:
+        ipc_connection.sendall(json.dumps({"usb_connected":usb_connected,"ble_connected":ble_connected}).encode())
+    except BrokenPipeError: 
+        ipc_connected = False
 
 
 def ipc_loop():
