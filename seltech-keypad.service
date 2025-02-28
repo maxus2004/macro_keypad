@@ -6,6 +6,8 @@ Wants=bluetooth.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/seltech-keypad
+Environment="WAYLAND_DISPLAY=wayland-0"
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
 ExecStart=/usr/bin/python3 /opt/seltech-keypad/keypad_daemon.py
  
 [Install]
