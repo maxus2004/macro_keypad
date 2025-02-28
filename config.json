@@ -1,0 +1,78 @@
+{
+    "actions": {
+        "layout1": {
+            "5": [
+                {
+                    "modifiers": [
+                        "shift"
+                    ],
+                    "action": "type",
+                    "str": "A "
+                },
+                {
+                    "action": "type",
+                    "str": "\\alpha "
+                }
+            ],
+            "20": [],
+            "19": [],
+            "4": [
+                {
+                    "modifiers": [
+                        "shift"
+                    ],
+                    "action": "type",
+                    "str": "B "
+                },
+                {
+                    "action": "type",
+                    "str": "\\beta "
+                }
+            ],
+            "10": [
+                {
+                    "action": "type",
+                    "str": "\\in "
+                }
+            ],
+            "9": [
+                {
+                    "action": "type",
+                    "str": "\\exists "
+                }
+            ],
+            "8": [
+                {
+                    "action": "type",
+                    "str": "\\forall "
+                }
+            ],
+            "3": [
+                {
+                    "modifiers": [
+                        "shift"
+                    ],
+                    "action": "type",
+                    "str": "\\Delta "
+                },
+                {
+                    "action": "type",
+                    "str": "\\delta "
+                }
+            ],
+            "2": [
+                {
+                    "modifiers": [
+                        "shift"
+                    ],
+                    "action": "type",
+                    "str": "\\Gamma "
+                },
+                {
+                    "action": "type",
+                    "str": "\\gamma "
+                }
+            ]
+        }
+    }
+}

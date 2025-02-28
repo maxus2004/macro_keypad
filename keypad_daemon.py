@@ -7,47 +7,63 @@ import os.path
 import logging
 import traceback
 import time
+import socket
+import json
+from threading import Thread
 
 usb_connected = False
 ble_connected = False
+ipc_connected = False
+ipc_connection = None
 
+ble_buffer = ""
+
+layout_id = "layout1"
+pressed_keys = []
+
+config = json.load(open("config.json", "rb"))
 
 def type_str(str):
     prev_clipboard = pyperclip.paste()
     pyperclip.copy(str)
     time.sleep(0.01)
-    keyboard.send("shift+insert")
+    keyboard.send("ctrl+v")
     time.sleep(0.01)
     pyperclip.copy(prev_clipboard)
 
 
 def process_message(command_str):
     event_type = command_str[0]
-    key_id = int(command_str[1::])
+    key_id = str(int(command_str[1::])+1)
 
+    if key_id not in config["actions"][layout_id]: return
+    
     if event_type == "P":
-        match key_id:
-            case 4:
-                if keyboard.is_pressed("shift"):
-                    type_str("\\Alpha ")
-                else:
-                    type_str("\\alpha ")
-            case 3:
-                if keyboard.is_pressed("shift"):
-                    type_str("\\Delta ")
-                else:
-                    type_str("\\delta ")
-            case 2:
-                if keyboard.is_pressed("shift"):
-                    type_str("\\Lambda ")
-                else:
-                    type_str("\\lambda ")
-            case 1:
-                type_str("\\forall ")
-            case 9:
-                type_str("\\in ")
-            case 8:
-                type_str("\\exists ")
+        pressed_keys.append(key_id)
+        for action in config["actions"][layout_id][key_id]:
+            if "action" not in action: continue
+
+            if "modifiers" in action:
+                modifiers_correct = True
+                for modifier_key in action["modifiers"]:
+                    if modifier_key.startswith("btn_"):
+                        if(modifier_key[4::] not in pressed_keys): 
+                            modifiers_correct = False
+                            break
+                    elif not keyboard.is_pressed(modifier_key):
+                        modifiers_correct = False
+                        break
+                if not modifiers_correct: continue
+
+            if action["action"] == "type":
+                type_str(action["str"])
+            elif action["action"] == "cmd":
+                os.system(action["cmd"])
+
+            break
+
+    elif event_type == "R":
+        pressed_keys.remove(key_id)
 
 
 async def usb_loop():
@@ -63,6 +79,7 @@ async def usb_loop():
             )
             usb_connected = True
             print("USB connected")
+            update_status()
             while True:
                 line = (await usb_reader.readuntil(b"\n")).decode().strip()
                 process_message(line)
@@ -75,11 +92,9 @@ async def usb_loop():
         if usb_connected:
             usb_connected = False
             print("USB disconnected")
+            update_status()
 
         await asyncio.sleep(1)
-
-
-ble_buffer = ""
 
 
 def ble_receiver(bytes):
@@ -108,6 +123,7 @@ async def ble_loop():
                 continue
             ble_connected = True
             print("BLE connected")
+            update_status()
             while ble.dev.is_connected:
                 if usb_connected:
                     await ble.disconnect()
@@ -116,19 +132,64 @@ async def ble_loop():
             if (
                 e.args != ("No matching device found!",)
                 and e.args != ("failed to discover services, device disconnected",)
+                and e.args != ('org.bluez.Error.NotReady', 'Resource Not Ready',)
                 and not isinstance(e,EOFError)
             ):
+                print(e.args)
                 traceback.print_exc()
 
         if ble_connected:
             ble_connected = False
             print("BLE disconnected")
-
+            update_status()
         await asyncio.sleep(1)
+
+    
+def update_status():
+    global ipc_connection, ipc_connected
+    if not ipc_connected: return
+    ipc_connection.sendall(json.dumps({"usb_connected":usb_connected,"ble_connected":ble_connected}).encode())
+
+
+def ipc_loop():
+    global ipc_connection, config, ipc_connected
+    print('IPC loop started')
+    try:
+        os.unlink('/tmp/seltech_keypad_socket')
+    except OSError:
+        if os.path.exists('/tmp/seltech_keypad_socket'):
+            raise
+
+    server = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+    server.bind('/tmp/seltech_keypad_socket')
+    os.chmod("/tmp/seltech_keypad_socket" , 0o777)
+
+    server.listen(1)
+
+    while True:
+        ipc_connection, _ = server.accept()
+
+        try:
+            print("IPC client connected")
+            ipc_connected = True
+
+            update_status()
+            while True:
+                data = ipc_connection.recv(1024)
+                if not data:
+                    break
+                command = data.decode()
+                if command=="reload_config":
+                    config = json.load(open("config.json", "rb"))
+        except ConnectionResetError:
+            pass
+        print("IPC client disconnected")
+        ipc_connected = False
 
 
 async def main():
     logging.basicConfig(level=logging.ERROR)
+    Thread(target=ipc_loop).start()
     await asyncio.gather(ble_loop(), usb_loop())
 
 
