@@ -1,0 +1,10 @@
+[Unit]
+Description=Sel'tso Technologies Macro Keypad GUI
+ 
+[Service]
+Type=simple
+WorkingDirectory=/opt/seltech-keypad
+ExecStart=/usr/bin/python3 /opt/seltech-keypad/keypad_gui.py
+ 
+[Install]
+WantedBy=default.target

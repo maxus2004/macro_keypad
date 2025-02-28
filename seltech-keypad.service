@@ -1,0 +1,12 @@
+[Unit]
+Description=Sel'tso Technologies Macro Keypad driver
+After=bluetooth.target
+Wants=bluetooth.target
+ 
+[Service]
+Type=simple
+WorkingDirectory=/opt/seltech-keypad
+ExecStart=/usr/bin/python3 /opt/seltech-keypad/keypad_daemon.py
+ 
+[Install]
+WantedBy=multi-user.target

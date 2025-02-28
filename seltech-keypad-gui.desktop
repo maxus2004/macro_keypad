@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Keypad GUI
+Comment=Sel'tso Technologies Macro Keypad GUI
+Path=/opt/seltech-keypad/
+Exec=/usr/bin/python3 /opt/seltech-keypad/keypad_gui.py
+Icon=/opt/seltech-keypad/images/icon.png
+Terminal=false
