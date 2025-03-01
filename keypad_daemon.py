@@ -116,7 +116,7 @@ async def ble_loop():
             await asyncio.sleep(1)
 
         try:
-            await ble.connect("12:34:56:01:E0:D2", "public", None, 10.0)
+            await ble.connect("12:34:56:01:E0:D2", "public", None, 2)
             await ble.setup_chars(None, None, "rw", True)
             if usb_connected:
                 await ble.disconnect()
@@ -142,7 +142,8 @@ async def ble_loop():
             ble_connected = False
             print("BLE disconnected")
             update_status()
-        await asyncio.sleep(1)
+
+        await asyncio.sleep(10)
 
     
 def update_status():
