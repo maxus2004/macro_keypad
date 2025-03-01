@@ -2,7 +2,7 @@
 Type=Application
 Name=Keypad GUI
 Comment=Sel'tso Technologies Macro Keypad GUI
-Path=/opt/seltech-keypad/
-Exec=/usr/bin/python3 /opt/seltech-keypad/keypad_gui.py
+Keywords=Seltech;Seltso;
+Exec=systemctl start --user seltech-keypad-gui
 Icon=/opt/seltech-keypad/images/icon.png
 Terminal=false

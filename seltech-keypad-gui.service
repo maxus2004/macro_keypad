@@ -1,16 +1,12 @@
 [Unit]
 Description=Sel'tso Technologies Macro Keypad GUI
-After=graphical-session.target
-BindsTo=graphical-session.target
-PartOf=graphical-session.target
-Requisite=graphical-session.target
  
 [Service]
-Restart=always
+Restart=on-failure
 RestartSec=5s
 Type=simple
 WorkingDirectory=/opt/seltech-keypad
 ExecStart=/usr/bin/python3 /opt/seltech-keypad/keypad_gui.py
  
 [Install]
-WantedBy=graphical-session.target
+WantedBy=default.target
