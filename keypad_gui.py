@@ -114,7 +114,7 @@ def ipc_loop():
     global tray, ipc_client
     ipc_client = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
 
-    ipc_client.connect("/tmp/seltech_keypad_socket")
+    ipc_client.connect("/run/seltech-keypad.sock")
 
     while True:
         message_str = ipc_client.recv(1024).decode()

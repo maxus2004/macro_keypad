@@ -158,14 +158,14 @@ def ipc_loop():
     global ipc_connection, config, ipc_connected
     print('IPC loop started')
     try:
-        os.unlink('/tmp/seltech_keypad_socket')
+        os.unlink('/run/seltech-keypad.sock')
     except OSError:
-        if os.path.exists('/tmp/seltech_keypad_socket'):
+        if os.path.exists('/run/seltech-keypad.sock'):
             raise
 
     server = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
-    server.bind('/tmp/seltech_keypad_socket')
-    os.chmod("/tmp/seltech_keypad_socket" , 0o777)
+    server.bind('/run/seltech-keypad.sock')
+    os.chmod("/run/seltech-keypad.sock" , 0o777)
 
     server.listen(1)
 
