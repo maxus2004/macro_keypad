@@ -14,7 +14,7 @@ sudo cp ui_main_window.py /opt/seltech-keypad/ui_main_window.py
 sudo cp ui_key_action_settings.py /opt/seltech-keypad/ui_key_action_settings.py
 
 sudo cp config.json /opt/seltech-keypad/config.json
-sudo chowm $USER:$USER /opt/seltech-keypad/config.json
+sudo chown $USER:$USER /opt/seltech-keypad/config.json
 
 sudo cp seltech-keypad.service /etc/systemd/system/seltech-keypad.service
 sudo systemctl enable seltech-keypad
