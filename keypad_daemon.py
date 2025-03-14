@@ -24,12 +24,15 @@ pressed_keys = []
 config = json.load(open("config.json", "rb"))
 
 def type_str(str):
-    prev_clipboard = pyperclip.paste()
-    pyperclip.copy(str)
-    time.sleep(0.01)
-    keyboard.send("ctrl+v")
-    time.sleep(0.01)
-    pyperclip.copy(prev_clipboard)
+    if str == "&" or str == "$":
+        keyboard.write(str)
+    else:
+        prev_clipboard = pyperclip.paste()
+        pyperclip.copy(str)
+        time.sleep(0.01)
+        keyboard.send("ctrl+v")
+        time.sleep(0.01)
+        pyperclip.copy(prev_clipboard)
 
 
 def process_message(command_str):
