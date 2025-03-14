@@ -46,7 +46,7 @@ def show_key_config(key_id: str, key: QPushButton):
     key_config_dialog = QDialog(window)
     key_config_dialog.ui = Ui_ButtonConfigDialog()
     key_config_dialog.ui.setupUi(key_config_dialog)
-    key_config_dialog.ui.KeyCationTextEdit.setPlainText(key.text())
+    key_config_dialog.ui.KeyCationTextEdit.setPlainText(key.text().replace('&&','&'))
     def accept_action():
         key.setText(key_config_dialog.ui.KeyCationTextEdit.toPlainText().replace('&','&&'))
         set_key_config(key_id, key_config_dialog.ui.KeyCationTextEdit.toPlainText())
