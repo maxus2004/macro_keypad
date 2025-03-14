@@ -32,6 +32,7 @@ def set_key_config(key_id:str, text_config:str):
         if action_str.endswith('"'):
             action_str = action_str[:-1]
 
+
         action = {}
         if modifiers_str != "":
             action["modifiers"] = []
@@ -47,7 +48,7 @@ def show_key_config(key_id: str, key: QPushButton):
     key_config_dialog.ui.setupUi(key_config_dialog)
     key_config_dialog.ui.KeyCationTextEdit.setPlainText(key.text())
     def accept_action():
-        key.setText(key_config_dialog.ui.KeyCationTextEdit.toPlainText())
+        key.setText(key_config_dialog.ui.KeyCationTextEdit.toPlainText().replace('&','&&'))
         set_key_config(key_id, key_config_dialog.ui.KeyCationTextEdit.toPlainText())
     key_config_dialog.ui.buttonBox.accepted.connect(accept_action)
     key_config_dialog.show()
@@ -71,7 +72,7 @@ def setup_settings_window():
             for action in config["actions"]["layout1"][key_id]:
                 if "modifiers" in action: text += "+".join(action["modifiers"])
                 text += ":\"" + action["str"] + "\"\n"
-            key.setText(text)
+            key.setText(text.replace('&','&&'))
 
     return window
 
